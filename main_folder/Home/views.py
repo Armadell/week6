@@ -12,6 +12,7 @@ from django.contrib.auth import logout
 from django.http import HttpResponse 
 from .models import book
 from .forms import BookCreate
+from django.contrib.auth.models import User
 #this inherits usercreation form
 # Create your views here.
 def home(request):
@@ -58,6 +59,7 @@ def logout_view(request):
 
 def index(request):
   shelf=book.objects.all()
+  
   return render(request,'Home/library.html',{'shelf':shelf})
 def upload(request):
   upload=BookCreate()
@@ -83,11 +85,90 @@ def update_book(request, book_id):
        book_form.save()
        return redirect('library')
     return render(request, 'Home/upload_form.html', {'upload_form':book_form})
-def delete_book(request, book_id):
-    book_id = int(book_id)
+
+# def check_admin1(request):
+#     if request.method=="POST":
+#       form=AuthenticationForm(request,data=request.POST)
+#       if request.user.is_superuser:
+#         users=form.objects.all() 
+#         return render(request,'Home/admin_panel.html',{'users':users})
+#       else:
+#         return render(request,'Home/base.html')
+#     else:
+#        form=AuthenticationForm()
+#        return render(request,'Home/admin.html',{'login_form':form})
+        
+
+
+def check_admin1(request):
+  
+  if request.method=="POST":
+    form=AuthenticationForm(request,data=request.POST)
+    if form.is_valid():
+
+      
+      user=authenticate(username='username',password='password')
+      if request.user.is_superuser==True:
+        
+        login(request,user)
+        
+        return redirect("admin_panel")
+      else:
+        messages.error(request,"Invalid username or password.")
+    else:
+      messages.error(request,"Invalid username or password.")
+  form=AuthenticationForm()
+  return render(request,"Home/admin.html",context={'login_form':form})
+
+
+# def panel(request):
+
+#    if request.method =='POST':
+#      form=UserRegisterForm(request.POST)
+#      if form.is_valid():
+        
+#         form.save()
+        
+       
+#         return redirect('admin_panel')
+#    else:
+#        form=UserRegisterForm()
+     
+#    return render(request,'Home/create.html',  {'form':form})
+def show(request):
+  
+   if request.method =='POST':
+     
+     form=UserRegisterForm(request.POST)
+     if form.is_valid():
+        form=UserRegisterForm(request.POST)
+        # nm=form.cleaned_data['username']
+        # em=form.cleaned_data['email']
+        # ps=form.cleaned_data['password']
+        # reg=User(username=nm,email=em,password=ps)
+
+        form.save()
+        form=UserRegisterForm()
+
+     else:
+       form=UserRegisterForm()
+   form=UserRegisterForm()
+   disp=User.objects.all() 
+   return render(request,'Home/admin_panel.html',  {'form':form,'user':disp})
+def update(request,pk):
+    user_id = int(pk)
     try:
-        book_sel = book.objects.get(id = book_id)
-    except book.DoesNotExist:
-        return redirect('library')
-    book_sel.delete()
-    return redirect('library')
+        reg = User.objects.get(id = user_id)
+    except reg.DoesNotExist:
+        return redirect('admin_panel')
+    reg_create= UserRegisterForm(request.POST or None,instance=reg)
+    if reg_create.is_valid():
+       reg_create.save()
+       return redirect('admin_panel')
+    return render(request, 'Home/upload_form.html', {'upload_form':reg_create})
+def delete_user(request,pk):
+    userid=User.objects.get(id=pk)
+    userid.delete()
+    return redirect("admin_panel")       
+
+    

@@ -1,0 +1,30 @@
+{% extends  "Home/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+     
+        <form method='POST'>
+            {% csrf_token %}
+            <fieldset class='form-group'>
+            <legend class='border-bottom mb-4 '>log In</legend>
+            {{ login_form|crispy }}
+            </fieldset>
+            <div class='form-group'>
+           <button class="btn btn-outline-info" type='submit'>login</button>
+            </div>
+            
+        </form>
+       
+    </div>
+
+
+{% endblock content %}
+
+
+
+
+
+
+
+
+

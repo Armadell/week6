@@ -1,7 +1,7 @@
+
 from django.apps import AppConfig
-from django.contrib.admin.apps import AdminConfig
  
 
-class HomeConfig(AdminConfig):
+class HomeConfig(AppConfig):
     default_site = 'django.db.models.BigAutoField'
     name = 'Home'

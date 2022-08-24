@@ -1,0 +1,90 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static "Home\main.css" %}">
+
+   
+</head>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <a style='font-size:1.5rem;' class="navbar-brand" href="{%url 'main_home'%}">Home</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul style='font-size:1.5rem;'class="navbar-nav nav-pills nav-fill ml-auto px-4 ">
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'Home' %}">Register<span class="sr-only"></span></a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{%url 'admin1'%}">Admin<span class="sr-only"></span></a>
+          </li>
+          <li class="nav-item active">
+            {%if request.user.is_authenticated %}
+            <a class="nav-link" href="{% url 'logout' %}">Log Out <span class="sr-only"></span></a>
+            {% else %}
+            <a class="nav-link" href="{% url 'login' %}">Log In <span class="sr-only"></span></a>
+            {% endif %}
+          </li>
+        </ul>
+      </div>
+    </nav>
+  
+  </header>
+  <main role="main" >
+    <div class="row container-fluid justify-content-center pl-4">
+     <div class="col-md-4">
+      {% load crispy_forms_tags %} 
+      <h1>Add Data</h1>
+      
+      <form method="POST">
+        
+        {% csrf_token %}
+        {{ form|crispy }}                    
+        <button class="btn btn-primary" type="submit">Add</button>
+      </form>
+     
+     </div>
+      <div classs="col-md-8 justify-content-spacearound">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Id</th>
+              <th scope="col">User Name</th>
+              
+              <th scope="col">Email</th>
+              <th scope="col">Delete</th>
+              <th scope="col">Update</th>
+             
+             
+            </tr>
+          </thead>
+          <tbody>
+            {%for context in user%}
+            <tr>
+              <th scope="row">{{context.id}}</th>
+              <td>{{context.username}}</td>
+             
+              <td>{{context.email}}</td>
+              <td scope="col"><button type="button" class="btn btn-dark"><a href="{% url "Delete" context.id %}" >Delete</a></button></td>
+              <td scope="col"><button type="button" class="btn btn-dark"><a href="{% url "update" context.id %}" >Update</a></button></td>
+            </tr>
+            {%endfor%}
+          </tbody>
+        </table>
+      
+      </div>
+    </div>
+  </main>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
